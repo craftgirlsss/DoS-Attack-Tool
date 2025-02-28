@@ -1,8 +1,11 @@
 import argparse
+import threading
 from colorama import Fore
 from src.helpers import Helpers
 from src.tcp_method import TCPMethod
 from src.udp_method import UDPMethod
+from src.http_method import HTTPMethod
+from src.icmp_method import ICMPMethod
 
 class ArgumentHandler():
     def __init__(self):
@@ -13,6 +16,8 @@ class ArgumentHandler():
         group = parser.add_mutually_exclusive_group(required=True)
         group.add_argument("-tC", "--tcp", action="store_true", help="Gunakan metode TCP Attack")
         group.add_argument("-uD", "--udp", action="store_true", help="Gunakan metode UDP Attack")
+        group.add_argument("-hT", "--http", action="store_true", help="Gunakan metode HTTP Attack")
+        group.add_argument("-iC", "--icmp", action="store_true", help="Gunakan metode ICMP Attack")
 
         parser.add_argument("-ip", "--ipaddress", type=str, required=True, help="IP target")
         parser.add_argument("-p", "--port", type=int, default=80, help="Port target (default: 80)")
@@ -36,3 +41,23 @@ class ArgumentHandler():
                 udpMethod.udp_attack()
             else:
                 print(Fore.RED, f"Failed Running code")
+        elif args.http:
+            try:
+                for _ in range(args.thread):
+                    thread = threading.Thread(target=HTTPMethod.attack, args=(args.ipaddress, args.port))
+                    thread.start()
+                while True:
+                    pass
+            except KeyboardInterrupt:
+                print("\nSerangan dihentikan.")
+        elif args.icmp:
+            try:
+                for _ in range(args.thread):
+                    thread = threading.Thread(target=ICMPMethod.attack, args=(args.ipaddress, args.port))
+                    thread.start()
+                while True:
+                    pass
+            except KeyboardInterrupt:
+                print("\nSerangan dihentikan.")
+        else:
+            print(Fore.RED, f"Gagal menentukan metode Serangan")
