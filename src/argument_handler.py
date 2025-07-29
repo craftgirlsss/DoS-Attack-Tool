@@ -6,6 +6,7 @@ from src.tcp_method import TCPMethod
 from src.udp_method import UDPMethod
 from src.http_method import HTTPMethod
 from src.icmp_method import ICMPMethod
+from src.ucp_method import UCPMethod
 
 class ArgumentHandler():
     def __init__(self):
@@ -15,6 +16,7 @@ class ArgumentHandler():
         parser = argparse.ArgumentParser(description="Simulasi Serangan TCP/UDP DDoS")
         group = parser.add_mutually_exclusive_group(required=True)
         group.add_argument("-tC", "--tcp", action="store_true", help="Gunakan metode TCP Attack")
+        group.add_argument("-uC", "--ucp", action="store_true", help="Gunakan metode TCP Attack")
         group.add_argument("-uD", "--udp", action="store_true", help="Gunakan metode UDP Attack")
         group.add_argument("-hT", "--http", action="store_true", help="Gunakan metode HTTP Attack")
         group.add_argument("-iC", "--icmp", action="store_true", help="Gunakan metode ICMP Attack")
@@ -59,5 +61,15 @@ class ArgumentHandler():
                     pass
             except KeyboardInterrupt:
                 print("\nSerangan dihentikan.")
+        elif args.ucp:
+            UCPMethod.attack(port=args.port, target=args.ipaddress)
+            # try:
+            #     for _ in range(args.thread):
+            #         thread = threading.Thread(target=UCPMethod.attack, args=(args.ipaddress, args.port))
+            #         thread.start()
+            #     while True:
+            #         pass
+            # except KeyboardInterrupt:
+            #     print("\nSerangan dihentikan.")
         else:
             print(Fore.RED, f"Gagal menentukan metode Serangan")
